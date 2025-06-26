@@ -1,38 +1,14 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // para [(ngModel)]
-import { UsuarioEnMesa, UsuarioService } from '../../services/usuario/usuario';
-
-@Component({
-  selector: 'app-controles-administrador-modal',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './controles-administrador-modal.html',
-  styleUrls: ['./controles-administrador-modal.css'],
-})
-export class ControlesAdministradorModalComponent {
-  @Input() usuarioActual!: UsuarioEnMesa;
-  @Input() jugadores: UsuarioEnMesa[] = [];
-  @Output() cerrar = new EventEmitter<void>();
-
-  jugadorSeleccionado: string = '';
-
-  constructor(private usuarioService: UsuarioService) {}
-
-  delegarRol() {
-    if (!this.jugadorSeleccionado) return;
-    this.usuarioService.delegarPropietario(this.usuarioActual.nombre, this.jugadorSeleccionado);
-    this.cerrarModal();
-  }
-
-  cambiarModo() {
-    const nuevoModo = this.usuarioActual.modo === 'jugador' ? 'espectador' : 'jugador';
-    this.usuarioService.actualizarModo(this.usuarioActual.nombre, nuevoModo);
-    this.usuarioActual.modo = nuevoModo;
-    this.cerrarModal();
-  }
-
-  cerrarModal() {
-    this.cerrar.emit();
-  }
+delegarPropietario(actualPropietario: string, nuevoPropietario: string) {
+  const usuarios = this.obtenerUsuarios().map((u) => {
+    if (u.nombre === actualPropietario) {
+      return { ...u, rol: 'jugador' };
+    }
+    if (u.nombre === nuevoPropietario) {
+      return { ...u, rol: 'propietario' };
+    }
+    return u;
+  });
+  localStorage.setItem('usuarios-mesa', JSON.stringify(usuarios));
+  this.usuariosSubject.next(usuarios);
 }
+
