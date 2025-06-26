@@ -1,18 +1,42 @@
-export function calcularPosicionRectangular(index: number, total: number): { top: string; left: string } {
-  const posiciones = [
-    { top: '80%', left: '50%' }, // 0: propietario al centro abajo
-    { top: '80%', left: '30%' }, // 1
-    { top: '80%', left: '70%' }, // 2
-    { top: '60%', left: '10%' }, // 3
-    { top: '60%', left: '90%' }, // 4
-    { top: '40%', left: '10%' }, // 5
-    { top: '40%', left: '90%' }, // 6
-    { top: '20%', left: '30%' }, // 7
-    { top: '20%', left: '70%' }, // 8
-    { top: '0%',  left: '50%' }, // 9: al centro arriba
-    { top: '20%', left: '10%' }, // 10
-    { top: '20%', left: '90%' }, // 11
-  ];
-
-  return posiciones[index] || { top: '0%', left: '0%' }; // fallback
-}
+<!-- Cartas disponibles para votar -->
+<app-seleccion-cartas-component
+  [cartas]="cartas"
+  [modoUsuario]="usuarioActual.modo"
+  (cartaSeleccionada)="seleccionarCarta.emit($event)"
+></app-seleccion-cartas-component>
+<!-- Mostrar los usuarios en la mesa -->
+<div class="usuarios-mesa">
+  <app-usuario-en-mesa-carta
+    *ngFor="let usuario of usuariosEnMesa"
+    [nombre]="usuario.nombre"
+    [modo]="usuario.modo"
+    [carta]="usuario.carta"
+    [esUsuarioActual]="usuario.nombre === usuarioActual.nombre"
+  ></app-usuario-en-mesa-carta>
+</div>
+<!-- Controles de administración -->
+<app-controles-administrador-component
+  *ngIf="usuarioActual?.rol === 'propietario'"
+  [cartasReveladas]="cartasReveladas"
+  (revelar)="revelar.emit()"
+  (reiniciar)="reiniciar.emit()"
+></app-controles-administrador-component>
+<!-- Botón para invitar jugadores -->
+<app-button-dark
+  *ngIf="usuarioActual?.rol !== 'espectador'"
+  [texto]="'Invitar jugadores'"
+  [tipo]="'button'"
+  (click)="invitar.emit()"
+></app-button-dark>
+<!-- Resumen de votación (si se revelaron las cartas) -->
+<app-resumen-votacion-component
+  *ngIf="cartasReveladas"
+  [promedio]="promedio"
+  [votos]="votos"
+></app-resumen-votacion-component>
+<!--Cambiar modo jugador/espectador-->
+<app-button-dark
+  *ngIf="usuarioActual?.modo === 'jugador' ? 'Cambiar a espectador' : 'Cambiar a jugador' "
+  [tipo]="'button'"
+  (click)="cambiarModoUsuario.emit()"
+></app-button-dark>
