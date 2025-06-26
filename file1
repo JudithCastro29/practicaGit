@@ -1,42 +1,100 @@
-<!-- Cartas disponibles para votar -->
-<app-seleccion-cartas-component
-  [cartas]="cartas"
-  [modoUsuario]="usuarioActual.modo"
-  (cartaSeleccionada)="seleccionarCarta.emit($event)"
-></app-seleccion-cartas-component>
-<!-- Mostrar los usuarios en la mesa -->
-<div class="usuarios-mesa">
-  <app-usuario-en-mesa-carta
-    *ngFor="let usuario of usuariosEnMesa"
-    [nombre]="usuario.nombre"
-    [modo]="usuario.modo"
-    [carta]="usuario.carta"
-    [esUsuarioActual]="usuario.nombre === usuarioActual.nombre"
-  ></app-usuario-en-mesa-carta>
-</div>
-<!-- Controles de administración -->
-<app-controles-administrador-component
-  *ngIf="usuarioActual?.rol === 'propietario'"
-  [cartasReveladas]="cartasReveladas"
-  (revelar)="revelar.emit()"
-  (reiniciar)="reiniciar.emit()"
-></app-controles-administrador-component>
-<!-- Botón para invitar jugadores -->
-<app-button-dark
-  *ngIf="usuarioActual?.rol !== 'espectador'"
-  [texto]="'Invitar jugadores'"
-  [tipo]="'button'"
-  (click)="invitar.emit()"
-></app-button-dark>
-<!-- Resumen de votación (si se revelaron las cartas) -->
-<app-resumen-votacion-component
-  *ngIf="cartasReveladas"
-  [promedio]="promedio"
-  [votos]="votos"
-></app-resumen-votacion-component>
-<!--Cambiar modo jugador/espectador-->
-<app-button-dark
-  *ngIf="usuarioActual?.modo === 'jugador' ? 'Cambiar a espectador' : 'Cambiar a jugador' "
-  [tipo]="'button'"
-  (click)="cambiarModoUsuario.emit()"
-></app-button-dark>
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { SeleccionCartasComponent } from '../../organisms/seleccion-cartas-component/seleccion-cartas-component';
+import { ControlesAdministradorComponent } from '../../organisms/controles-administrador-component/controles-administrador-component';
+import { ResumenVotacionComponent } from '../../organisms/resumen-votacion-component/resumen-votacion-component';
+import { UsuarioEnMesaCarta } from '../../molecules/usuario-en-mesa-carta/usuario-en-mesa-carta';
+import { ButtonDark } from '../../atoms/button-dark/button-dark';
+import { UsuarioEnMesa } from '../../services/usuario/usuario';
+import { getPlayerStyle } from '../../utils/player-position';
+@Component({
+  selector: 'app-mesa-votacion-template-component',
+  standalone: true,
+  imports: [
+    CommonModule,
+    SeleccionCartasComponent,
+    ControlesAdministradorComponent,
+    ResumenVotacionComponent,
+    UsuarioEnMesaCarta,
+    ButtonDark,
+  ],
+  templateUrl: './mesa-votacion-template-component.html',
+  styleUrl: './mesa-votacion-template-component.css',
+})
+export class MesaVotacionTemplateComponent {
+  @Input() usuarioActual!: UsuarioEnMesa;
+  @Input() usuariosEnMesa: UsuarioEnMesa[] = [];
+  @Input() cartas: string[] = [];
+  @Input() cartasReveladas = false;
+  @Input() promedio: number | null = null;
+  @Input() votos: Record<string, number> = {};
+
+  @Output() seleccionarCarta = new EventEmitter<string>();
+  @Output() revelar = new EventEmitter<void>();
+  @Output() reiniciar = new EventEmitter<void>();
+  @Output() invitar = new EventEmitter<void>();
+  @Output() cambiarModoUsuario = new EventEmitter<void>();
+
+
+
+//funcion para calcular el estilo
+
+getPlayerStyle(index: number) {
+  return getPlayerStyle(index)
+}
+
+}
+
+▲ [WARNING] TS-998113: SeleccionCartasComponent is not used within the template of MesaVotacionTemplateComponent [plugin angular-compiler]
+
+    src/app/templates/mesa-votacion-template-component/mesa-votacion-template-component.ts:16:4:
+      16 │     SeleccionCartasComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] TS-998113: ControlesAdministradorComponent is not used within the template of MesaVotacionTemplateComponent [plugin angular-compiler]
+
+    src/app/templates/mesa-votacion-template-component/mesa-votacion-template-component.ts:17:4:
+      17 │     ControlesAdministradorComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] TS-998113: ResumenVotacionComponent is not used within the template of MesaVotacionTemplateComponent [plugin angular-compiler]
+
+    src/app/templates/mesa-votacion-template-component/mesa-votacion-template-component.ts:18:4:
+      18 │     ResumenVotacionComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] TS-998113: UsuarioEnMesaCarta is not used within the template of MesaVotacionTemplateComponent [plugin angular-compiler]
+
+    src/app/templates/mesa-votacion-template-component/mesa-votacion-template-component.ts:19:4:
+      19 │     UsuarioEnMesaCarta,
+         ╵     ~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] TS-998113: ButtonDark is not used within the template of MesaVotacionTemplateComponent [plugin angular-compiler]
+
+    src/app/templates/mesa-votacion-template-component/mesa-votacion-template-component.ts:20:4:
+      20 │     ButtonDark,
+         ╵     ~~~~~~~~~~
+
+
+X [ERROR] NG5002: Unexpected closing tag "div". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags [plugin angular-compiler]
+
+    src/app/templates/mesa-votacion-template-component/mesa-votacion-template-component.html:29:1:
+      29 │  </div>
+         ╵  ~~~~~~
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                       ateComponent.
+
+                                                             otacion-template-component.ts:22:15:
+X [ERROR] TS2305: Module '"../../utils/player-position"' has .html',
+no exported member 'calculateRectangularPositions'. [plugin a~~~~~~ngular-compiler]
+
+    src/app/templates/mesa-votacion-template-component/mesa-vno exported member 'calculateRectangularPositions'. [plugin angular-compiler]otacion-template-component.ts:10:9:
+      10 │ import { calculateRectangularPositions } from '../otacion-template-component.ts:10:9:../utils/player-...                                          ../utils/player-...
+         ╵          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Watch mode enabled. Watching for file changes...
