@@ -1,12 +1,26 @@
-delegarPropietario(nombrePartida: string, nuevoPropietario: string) {
-  const usuarios = this.cargarDesdeLocalStorage();
-  const actualizados = usuarios.map((u) => {
-    if (u.partida === nombrePartida) {
-      if (u.rol === 'propietario') return { ...u, rol: 'jugador' };
-      if (u.nombre === nuevoPropietario) return { ...u, rol: 'propietario' };
-    }
-    return u;
-  });
-  localStorage.setItem(CLAVE_LOCAL_STORAGE, JSON.stringify(actualizados));
-  this.usuariosSubject.next(actualizados);
-}
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <h2>Configuración de rol</h2>
+
+    <!-- 🔒 Solo para el propietario -->
+    <div *ngIf="usuarioActual.rol === 'propietario'">
+      <label for="delegar">Delegar rol de propietario:</label>
+      <select id="delegar" [(ngModel)]="jugadorSeleccionado">
+        <option *ngFor="let jugador of jugadores" [value]="jugador.nombre">
+          {{ jugador.nombre }}
+        </option>
+      </select>
+      <button (click)="delegarRol()">Delegar</button>
+    </div>
+
+    <!-- 🔄 Solo para jugador o espectador -->
+    <div *ngIf="usuarioActual.rol !== 'propietario'">
+      <p>Tu rol actual es: <strong>{{ usuarioActual.modo }}</strong></p>
+      <button (click)="cambiarModo()">
+        Cambiar a {{ usuarioActual.modo === 'jugador' ? 'espectador' : 'jugador' }}
+      </button>
+    </div>
+
+    <button (click)="cerrarModal()">Cerrar</button>
+  </div>
+</div>
