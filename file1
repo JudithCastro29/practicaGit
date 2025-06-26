@@ -1,0 +1,18 @@
+export function calcularPosicionRectangular(index: number, total: number): { top: string; left: string } {
+  const posiciones = [
+    { top: '80%', left: '50%' }, // 0: propietario al centro abajo
+    { top: '80%', left: '30%' }, // 1
+    { top: '80%', left: '70%' }, // 2
+    { top: '60%', left: '10%' }, // 3
+    { top: '60%', left: '90%' }, // 4
+    { top: '40%', left: '10%' }, // 5
+    { top: '40%', left: '90%' }, // 6
+    { top: '20%', left: '30%' }, // 7
+    { top: '20%', left: '70%' }, // 8
+    { top: '0%',  left: '50%' }, // 9: al centro arriba
+    { top: '20%', left: '10%' }, // 10
+    { top: '20%', left: '90%' }, // 11
+  ];
+
+  return posiciones[index] || { top: '0%', left: '0%' }; // fallback
+}
