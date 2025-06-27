@@ -1,0 +1,28 @@
+export function CalculatePlayerStyle(
+  index: number,
+  total: number,
+  nombreActual: string
+): { [key: string]: string } {
+  const angle = (360 / total) * index;
+
+  // Radios de la elipse
+  const radiusX = 400.5; // width / 2
+  const radiusY = 300.5; // height / 2
+
+  // Centro de la elipse (igual a su centro visual)
+  const centerX = 500 / 2;
+  const centerY = 280 / 2;
+
+  const radian = (angle * Math.PI) / 180;
+
+  // Posición usando fórmula de la elipse
+  const x = centerX + radiusX * Math.cos(radian);
+  const y = centerY + radiusY * Math.sin(radian);
+
+  return {
+    position: 'absolute',
+    left: `${x}px`,
+    top: `${y}px`,
+    transform: 'translate(-30%, -50%)',
+  };
+}
